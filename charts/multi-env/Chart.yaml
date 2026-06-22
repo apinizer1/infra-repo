@@ -1,0 +1,6 @@
+apiVersion: v2
+name: multi-env
+description: Messaging API (FastAPI) Helm chart
+type: application
+version: 0.1.0          # CHART sürümü — sadece template değişince artar
+appVersion: "v0.0.9"    # bilgi amaçlı (deploy'u image.tag sürer)

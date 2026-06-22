@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["image", "replicaCount", "service", "env"],
+  "properties": {
+    "image": {
+      "type": "object",
+      "required": ["repository", "tag"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": { "type": "string", "minLength": 1, "not": { "const": "latest" } }
+      }
+    },
+    "replicaCount": { "type": "integer", "minimum": 1 },
+    "service": {
+      "type": "object",
+      "required": ["type", "port"],
+      "properties": { "port": { "type": "integer" } }
+    },
+    "env": {
+      "type": "object",
+      "required": ["ENVIRONMENT"],
+      "properties": { "ENVIRONMENT": { "type": "string", "minLength": 1 } }
+    }
+  }
+}

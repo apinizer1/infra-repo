@@ -1,0 +1,3 @@
+# Gercek credential dosyalarini commit'leme; yalnizca *.example.yaml git'te kalir.
+*.yaml
+!*.example.yaml

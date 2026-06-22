@@ -1,0 +1,31 @@
+# Root app (app-of-apps) — BOOTSTRAP.
+#
+# Bu manifest cluster'a YALNIZCA 1 kez elle uygulanir:
+#   kubectl apply -n argocd -f argocd/root-app.yaml
+# Sonrasini ArgoCD'nin kendisi yonetir: root-app, infra-repo'daki "argocd/apps"
+# dizinini izler ve oradaki ApplicationSet'i (ve eklenebilecek diger app'leri)
+# senkronize eder. Yani ApplicationSet git'te yasar; "kubectl apply" yalnizca bootstrap'tir.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://git.local/infra-repo.git
+    targetRevision: main
+    path: argocd/apps
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

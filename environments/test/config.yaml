@@ -1,0 +1,5 @@
+# config.yaml
+env: test
+namespace: multi-env-test
+chartVersion: "0.1.0"
+autoSync: false

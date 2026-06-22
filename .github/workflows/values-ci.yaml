@@ -1,0 +1,24 @@
+name: Values CI
+on:
+  pull_request:
+    paths: ["environments/**", "argocd/**"]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Install kubeconform
+        run: |
+          curl -sL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          sudo mv kubeconform /usr/local/bin/
+      - name: Render + schema + k8s validate (her ortam)
+        run: |
+          echo "${{ secrets.REGISTRY_TOKEN }}" | helm registry login registry.local -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+          for d in environments/*/; do
+            env=$(yq '.env' "$d/config.yaml"); ver=$(yq '.chartVersion' "$d/config.yaml")
+            echo "== $env (chart $ver) =="
+            helm pull oci://registry.local/charts/multi-env --version "$ver" --untar -d /tmp/$env
+            # values.schema.json doğrulaması helm template sırasında otomatik çalışır:
+            helm template /tmp/$env/multi-env -f "$d/values.yaml" | kubeconform -strict -summary
+          done

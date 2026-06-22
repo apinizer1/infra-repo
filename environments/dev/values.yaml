@@ -1,0 +1,8 @@
+# values.yaml  (ortam-yerel + image pin)
+image:
+  tag: "v0.0.9"
+replicaCount: 1
+service:
+  nodePort: 30110
+env:
+  ENVIRONMENT: "dev"

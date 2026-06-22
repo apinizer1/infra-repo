@@ -1,0 +1,4 @@
+env: dev
+namespace: multi-env-dev
+chartVersion: "0.1.0"
+autoSync: true

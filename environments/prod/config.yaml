@@ -1,0 +1,5 @@
+# config.yaml
+env: prod
+namespace: multi-env-prod
+chartVersion: "0.1.0"
+autoSync: false

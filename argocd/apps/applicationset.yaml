@@ -1,0 +1,73 @@
+# ApplicationSet — her ortam icin bir ArgoCD Application uretir.
+#
+# Tasarim (CONTEXT.md md.8 + md.1/md.2):
+#   - Generator: git "files" -> environments/*/config.yaml dosyalarini okur.
+#     config.yaml alanlari parametre olur: env, namespace, chartVersion, autoSync.
+#   - Multi-source:
+#       (1) OCI Helm chart  -> registry.local/charts, chart: multi-env, surum config.yaml'daki chartVersion pin'i.
+#       (2) $values git ref -> infra-repo; values dosyasi $values/environments/<env>/values.yaml.
+#     Coupled degisiklikte chart+values tek atomik manifest olarak iner.
+#   - autoSync yalnizca dev'de true. templatePatch ile automated sync policy KOSULLU eklenir;
+#     test/uat/prod manuel kalir (Jenkins "argocd app sync" ile tetikler).
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: multi-env
+  namespace: argocd
+spec:
+  # templatePatch yalnizca go templating acikken calisir.
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://git.local/infra-repo.git
+        revision: main
+        files:
+          - path: "environments/*/config.yaml"
+  template:
+    metadata:
+      name: 'multi-env-{{ .env }}'
+      labels:
+        app.kubernetes.io/part-of: multi-env
+        env: '{{ .env }}'
+      # Self-heal'in Application kaynagini da temizleyebilmesi icin finalizer.
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      sources:
+        # (1) Chart: OCI registry'den, ortam basina chartVersion pin.
+        #     OCI Helm chart kaynaginda repoURL'de "oci://" oneki KULLANILMAZ.
+        - repoURL: registry.local/charts
+          chart: multi-env
+          targetRevision: '{{ .chartVersion }}'
+          helm:
+            releaseName: 'multi-env-{{ .env }}'
+            valueFiles:
+              - '$values/environments/{{ .env }}/values.yaml'
+        # (2) Values: infra-repo git; sadece deger kaynagi (chart alani YOK, ref ile isaretli).
+        - repoURL: https://git.local/infra-repo.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .namespace }}'
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+        retry:
+          limit: 3
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 2m
+  # Koşullu automated sync: yalnizca config.yaml'da autoSync:true olan ortamlar (dev).
+  templatePatch: |
+    {{- if .autoSync }}
+    spec:
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+    {{- end }}

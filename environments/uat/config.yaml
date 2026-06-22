@@ -1,0 +1,5 @@
+# config.yaml
+env: uat
+namespace: multi-env-uat
+chartVersion: "0.1.0"
+autoSync: false

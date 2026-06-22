@@ -1,0 +1,23 @@
+# infra-repo git repository credential (BOOTSTRAP, ornek).
+#
+# UYARI: Bu dosya bir ORNEK'tir (.example.yaml). Gercek token'i git'e COMMIT ETME.
+#   Uretimde: Sealed Secrets / SOPS / External Secrets Operator kullan.
+#   Bootstrap icin: bu dosyayi kopyalayip degerleri doldur, sonra:
+#     kubectl apply -n argocd -f infra-repo.yaml
+#
+# Eslesme: ApplicationSet generator'unun ve $values kaynaginin repoURL'i
+# "https://git.local/infra-repo.git" ile birebir ayni olmali.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-infra
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  name: infra-repo
+  type: git
+  url: https://git.local/infra-repo.git
+  username: <GIT_USER>
+  password: <GIT_TOKEN>

@@ -1,0 +1,24 @@
+name: Chart CI
+on:
+  push:
+    branches: [main]
+    paths: ["charts/**"]
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Lint & template
+        run: |
+          helm lint charts/multi-env
+          helm template charts/multi-env > /dev/null
+      - name: Package & push (immutable)
+        run: |
+          VER=$(helm show chart charts/multi-env | yq '.version')
+          echo "${{ secrets.REGISTRY_TOKEN }}" | helm registry login registry.local -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+          if helm pull oci://registry.local/charts/multi-env --version "$VER" 2>/dev/null; then
+            echo "Chart $VER zaten var (immutable). Chart.yaml version'ı bump et." && exit 1
+          fi
+          helm package charts/multi-env -d /tmp
+          helm push /tmp/multi-env-$VER.tgz oci://registry.local/charts
