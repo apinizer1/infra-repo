@@ -9,7 +9,7 @@ spec:
   goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
-        repoURL: https://git.local/infra-repo.git
+        repoURL: https://github.com/apinizer1/infra-repo.git
         revision: main
         files:
           - path: "environments/*/config.yaml"
@@ -27,7 +27,7 @@ spec:
       sources:
         # (1) Chart: OCI registry'den, ortam basina chartVersion pin.
         #     OCI Helm chart kaynaginda repoURL'de "oci://" oneki KULLANILMAZ.
-        - repoURL: registry.local/charts
+        - repoURL: registry-1.docker.io/apinizeren
           chart: multi-env
           targetRevision: '{{ .chartVersion }}'
           helm:
@@ -35,7 +35,7 @@ spec:
             valueFiles:
               - '$values/environments/{{ .env }}/values.yaml'
         # (2) Values: infra-repo git; sadece deger kaynagi (chart alani YOK, ref ile isaretli).
-        - repoURL: https://git.local/infra-repo.git
+        - repoURL: https://github.com/apinizer1/infra-repo.git
           targetRevision: main
           ref: values
       destination:

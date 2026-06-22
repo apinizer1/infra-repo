@@ -3,4 +3,4 @@ name: multi-env
 description: Messaging API (FastAPI) Helm chart
 type: application
 version: 0.1.0
-appVersion: "v0.0.9"  
+appVersion: "v0.0.2"  

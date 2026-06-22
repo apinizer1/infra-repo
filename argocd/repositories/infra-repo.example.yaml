@@ -6,7 +6,7 @@
 #     kubectl apply -n argocd -f infra-repo.yaml
 #
 # Eslesme: ApplicationSet generator'unun ve $values kaynaginin repoURL'i
-# "https://git.local/infra-repo.git" ile birebir ayni olmali.
+# "https://github.com/apinizer1/infra-repo.git" ile birebir ayni olmali.
 apiVersion: v1
 kind: Secret
 metadata:
@@ -18,6 +18,6 @@ type: Opaque
 stringData:
   name: infra-repo
   type: git
-  url: https://git.local/infra-repo.git
+  url: https://github.com/apinizer1/infra-repo.git
   username: <GIT_USER>
   password: <GIT_TOKEN>

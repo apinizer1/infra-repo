@@ -1,21 +1,21 @@
 image:
-  repository: apinizeren/multi-env
-  tag: ""               
+  repository: apinizeren/multi-env-app
+  tag: "v0.0.2"
   pullPolicy: IfNotPresent
 
 replicaCount: 1
 
 service:
-  type: NodePort        
-  port: 8000            
-  nodePort: null        
+  type: NodePort
+  port: 8000
+  nodePort: null
+
+env:
+  ENVIRONMENT: "dev"
 
 resources:
   requests: { cpu: 50m, memory: 64Mi }
-  limits:   { cpu: 250m, memory: 128Mi }
+  limits: { cpu: 250m, memory: 128Mi }
 
 probes:
   path: /health
-
-env:
-  ENVIRONMENT: ""

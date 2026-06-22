@@ -1,6 +1,7 @@
 # values.yaml
 image:
-  tag: "v0.0.9"
+  repository: apinizeren/multi-env-app
+  tag: "v0.0.2"
 replicaCount: 1
 service:
   nodePort: 30111

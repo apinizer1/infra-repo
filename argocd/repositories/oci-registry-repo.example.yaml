@@ -10,6 +10,6 @@ stringData:
   name: multi-env-charts
   type: helm
   enableOCI: "true"
-  url: registry.local/charts
+  url: registry-1.docker.io/apinizeren
   username: <REGISTRY_USER>
   password: <REGISTRY_TOKEN>
