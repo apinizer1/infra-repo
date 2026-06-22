@@ -1,14 +1,3 @@
-# ApplicationSet — her ortam icin bir ArgoCD Application uretir.
-#
-# Tasarim (CONTEXT.md md.8 + md.1/md.2):
-#   - Generator: git "files" -> environments/*/config.yaml dosyalarini okur.
-#     config.yaml alanlari parametre olur: env, namespace, chartVersion, autoSync.
-#   - Multi-source:
-#       (1) OCI Helm chart  -> registry.local/charts, chart: multi-env, surum config.yaml'daki chartVersion pin'i.
-#       (2) $values git ref -> infra-repo; values dosyasi $values/environments/<env>/values.yaml.
-#     Coupled degisiklikte chart+values tek atomik manifest olarak iner.
-#   - autoSync yalnizca dev'de true. templatePatch ile automated sync policy KOSULLU eklenir;
-#     test/uat/prod manuel kalir (Jenkins "argocd app sync" ile tetikler).
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:

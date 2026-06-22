@@ -1,12 +1,3 @@
-# OCI Helm registry repository credential (BOOTSTRAP, ornek).
-#
-# UYARI: Bu dosya bir ORNEK'tir (.example.yaml). Gercek parola/token'i git'e COMMIT ETME.
-#   Uretimde: Sealed Secrets / SOPS / External Secrets Operator kullan.
-#   Bootstrap icin: bu dosyayi kopyalayip degerleri doldur, sonra:
-#     kubectl apply -n argocd -f oci-registry-repo.yaml
-#
-# Eslesme: ApplicationSet'teki chart kaynagi repoURL'i "registry.local/charts" ile
-# birebir ayni olmali (ArgoCD repo kimligini URL onekine gore eslestirir).
 apiVersion: v1
 kind: Secret
 metadata:
